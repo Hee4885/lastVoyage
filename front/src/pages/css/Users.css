@@ -1,0 +1,27 @@
+.container.users {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #232526, #414345);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: scroll;
+}
+
+.container.users h2 {
+  margin-bottom: 20px;
+}
+
+.container.users ul {
+  list-style: none;
+  padding: 0;
+}
+
+.container.users li {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 5px 0;
+  padding: 10px 20px;
+  border-radius: 6px;
+}

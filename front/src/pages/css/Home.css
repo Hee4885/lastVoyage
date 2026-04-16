@@ -1,0 +1,100 @@
+@font-face {
+    font-family: 'IAmAPlayer';
+    src: url('./font/IAMAPLAYER.otf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'RoundedFixedsys';
+    src: url('./font/DungGeunMo.otf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SF_hambak';
+    src: url('./font/SF_hambak.ttf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+.container.home{
+  width: 100vw;
+  height: 100vh;
+  /* background: linear-gradient(to bottom right, #3a7bd5, #00d2ff); */
+  background-image: url("../images/background_home.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container.home h2 {
+  font-family: "SF_hambak";
+  color: #2E1800;
+  text-shadow: 2px 1px 2px #d16c00;
+  font-size: 170px;
+  margin: 10px;
+  position: absolute;
+  top: 10%;
+}
+
+.container.home input {
+  margin: 8px;
+  padding: 10px;
+  width: 200px;
+}
+
+.container.home p{
+  position: absolute;
+  left: 90%;
+  bottom: 9%;
+  color: #ffc9417b;
+  font-family: "RoundedFixedsys";
+  font-size: 16px;
+}
+
+.container.home button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  position: absolute;
+  bottom: 5%;
+  right: 4.3%;
+  background-color: #e2e2e29e;
+  border: none;
+  font-family: "RoundedFixedsys";
+  font-size: 10px;
+}
+
+.container.home button:hover {
+  margin-top: 10px;
+  padding: 10px 20px;
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  background-color: #8611119e;
+  transition: 0.3s;
+}
+
+.container.home img{
+  position: absolute;
+  bottom: 7%;
+  left: 10%;
+  width: 13%;
+  height: auto;
+}
+
+.container.home img:hover{
+  position: absolute;
+  bottom: 7%;
+  left: 10%;
+  width: 13%;
+  height: auto;
+  opacity: 0.5;
+  transition: 0.2s;
+  cursor: pointer;
+}

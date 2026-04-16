@@ -1,0 +1,101 @@
+@font-face {
+    font-family: 'IAmAPlayer';
+    src: url('./font/IAMAPLAYER.otf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'RoundedFixedsys';
+    src: url('./font/DungGeunMo.otf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'CoolGuy';
+    src: url('./font/CallifontCoolGuy-Medium.otf');
+    font-weight: normal;
+    font-display: swap;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.container.explain {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("../images/background_home.png");
+  background-size: cover;
+  background-position: center;
+  font-size: 40px;
+  color: white;
+  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container.explain p{
+  position: relative;
+  z-index: 2;
+  bottom: 40px;
+  margin-right: 70%;
+  font-size: 25px;
+  color: rgb(13, 17, 21);
+  font-family: "CoolGuy";
+  left: 35%;
+}
+
+.container.explain img{
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+  height: auto;
+}
+
+.container.explain #dear {
+  position: absolute;
+  right: 230px;
+  font-size: 30px;
+  top: 9%;
+  left: 33%;
+  margin: 1px;
+}
+
+.container.explain #exit {
+  position: absolute;
+  left: 62%;
+  bottom: 10%;
+  font-size: 30px;
+  top: 82%;
+  margin: 1px;
+  width: 20px;
+  color: rgba(240, 248, 255, 0.251);
+  cursor: pointer;
+}
+
+.container.explain #exit:hover {
+  color: rgba(0, 21, 255, 0.251);
+
+}
+
+.container.explain #start {
+  cursor: pointer;
+  width: 20px;
+  position: absolute;
+  left: 37%;
+  top: 82%;
+  font-size: 30px;
+  margin: 1px;
+  color: rgba(240, 248, 255, 0.251);
+}
+
+.container.explain #start:hover {
+  color: rgba(0, 21, 255, 0.251);
+}
