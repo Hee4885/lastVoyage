@@ -1,70 +1,185 @@
-# Getting Started with Create React App
+# Last Voyage (LAST-VOYAGE)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React + Express.js + SQLite로 만든 타이타닉 바탕 스토리 진행형 게임.  
+회원가입/로그인 → 멀티 스토리 진행 → 캐릭터 호감도 시스템 → 멀티 엔딩을 제공하는 학생 팀 프로젝트.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 한 줄 요약
 
-### `npm start`
+React(Frontend) + Express.js(Backend) + SQLite 기반 인터랙티브 비주얼 노벨 게임 — 회원 인증, 선택지 분기 게임플레이, 캐릭터 호감도 시스템 및 멀티 엔딩 수집 구현.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 주요 기능
 
-### `npm test`
+- **회원 관리** (회원가입, 로그인)
+- **선택지 기반 스토리 진행** (플레이어 선택에 따른 분기)
+- **캐릭터 호감도 시스템** (선택지별 호감도 변동 및 누적)
+- **멀티 엔딩 수집** (호감도에 따른 다양한 엔딩)
+- **게임 데이터 영속성** (사용자별 진행 상태 저장)
+- **게임 설명 및 튜토리얼** (게임 방법 안내)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 사용된 기술
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Frontend
+- **언어** : JavaScript (React)
+- **프레임워크** : React 19.2.0
+- **라우팅** : React Router DOM 7.9.5
+- **UI** : React Icons (아이콘 라이브러리)
+- **빌드 도구** : Create React App (Webpack/Babel)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Backend
+- **언어** : JavaScript (Node.js)
+- **서버** : Express.js 5.2.1
+- **데이터베이스** : SQLite3
+- **미들웨어** : CORS (크로스 오리진 요청 처리)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 개발 도구
+- **버전 관리** : Git / GitHub
+- **패키지 관리** : npm
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 저장소 구조 (요약)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```text
+.
+├─ front/                          # React 클라이언트 (프론트엔드)
+│  ├─ public/                      # 정적 파일 (index.html 등)
+│  ├─ src/                         # React 소스 코드
+│  │  ├─ components/               # 재사용 컴포넌트
+│  │  ├─ pages/                    # 페이지 컴포넌트
+│  │  ├─ App.js                    # 메인 앱 컴포넌트
+│  │  └─ index.js                  # 진입점
+│  ├─ package.json                 # 프론트 의존성
+│  └─ .gitignore
+│
+├─ back/                           # Express.js 서버 (백엔드)
+│  ├─ server.js                    # 서버 진입점 (PORT 3001)
+│  ├─ db.js                        # SQLite 연결 및 테이블 생성
+│  ├─ user.db                      # SQLite 데이터베이스 파일
+│  ├─ package.json                 # 백엔드 의존성
+│  └─ .gitignore
+│
+├─ .gitignore                      # Git 제외 파일 설정
+└─ README.md                       # 이 파일
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## API 엔드포인트 (백엔드)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| `GET` | `/` | 서버 상태 확인 |
+| `GET` | `/explain` | 게임 설명 페이지 |
+| `POST` | `/signup` | 회원가입 (id, password) |
+| `POST` | `/login` | 로그인 (id, password) |
+| `GET` | `/users` | 전체 사용자 조회 |
+| `POST` | `/favorability` | 호감도 저장 및 누적 (id, score) |
+| `GET` | `/favorability/:id` | 특정 사용자 호감도 조회 |
+| `GET` | `/endings/:userId` | 사용자 엔딩 컬렉션 조회 |
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 데이터베이스 스키마
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### users 테이블
+```sql
+CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    password TEXT NOT NULL,
+    favorability INT DEFAULT 0,       -- 캐릭터 호감도 (누적)
+    ending TEXT DEFAULT ''             -- 엔딩 컬렉션 (콤마 구분)
+)
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 실행 방법
 
-### Making a Progressive Web App
+### 1. 저장소 클론
+```bash
+git clone https://github.com/Hee4885/lastVoyage.git
+cd lastVoyage
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 2. 백엔드 실행
 
-### Advanced Configuration
+```bash
+cd back
+npm install
+node server.js
+```
+- 서버 실행: `http://localhost:3001`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 3. 프론트엔드 실행 (다른 터미널)
 
-### Deployment
+```bash
+cd front
+npm install
+npm start
+```
+- 앱 실행: `http://localhost:3000`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### 4. 브라우저에서 접속
+- 프론트엔드: `http://localhost:3000`
+- 백엔드 테스트: `http://localhost:3001`
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 주의사항
+
+- **Node.js & npm** 설치 필수
+- **포트 3000 (React), 3001 (Express)** 사용 가능해야 함
+- SQLite 데이터베이스는 자동으로 생성됨 (`back/user.db`)
+- 프론트 & 백을 **동시에** 실행해야 게임이 정상 작동
+
+---
+
+## 간단한 개발 메모
+
+- 백엔드와 프론트는 **CORS로 통신** (크로스 오리진 요청 허용)
+- 사용자 호감도는 **누적 방식**으로 저장 (회차별 선택에 따라 증감)
+- 엔딩은 **콤마로 구분**된 텍스트 형태로 저장
+- 비밀번호는 현재 **평문 저장** (보안 취약점)
+- 데이터베이스는 로컬 SQLite 사용
+
+---
+
+## 권장 개선 사항
+
+- 비밀번호 **해싱** (bcrypt 등)으로 보안 강화
+- **JWT 토큰** 기반 인증 추가
+- 비밀번호 **재설정 기능** 추가
+- 게임 진행 상태 저장/로드 기능
+- 에러 처리 및 입력 검증 보강
+- 유닛 테스트 작성
+- 배포 환경 설정 (Docker, CI/CD)
+
+---
+
+## 팀 역할
+
+- **프론트엔드** : React 기반 UI/UX 구현, 게임 인터페이스 개발
+- **백엔드** : Express 서버, SQLite 데이터베이스, API 설계
+- **게임 디자인** : 스토리, 선택지, 호감도 시스템 기획
+
+---
+
+## 라이선스
+
+개인 학습용 프로젝트
+
+---
+
+### 추가로 원하시면
+
+- 스크린샷 및 실행 예시 이미지 추가
+- API 테스트 (Postman/curl) 예시
+- 배포 가이드 (Vercel, Heroku 등)
+- 게임 스토리라인 문서화
