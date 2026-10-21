@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 const db = require("./db"); // SQLite DB 연결
 
 const app = express();
@@ -27,8 +28,6 @@ app.post("/favorability", (req, res) => {
         return res.status(400).json({ error: "아이디와 점수를 보내야 합니다." });
     }
 
-    const sqlAddColumn = `ALTER TABLE users ADD COLUMN IF NOT EXISTS favorability INT DEFAULT 0;`;
-    db.run(sqlAddColumn, err => err && console.error(err));
 
     // 기존 호감도에 누적
     const sqlUpdate = `UPDATE users SET favorability = COALESCE(favorability,0) + ? WHERE id = ?`;
@@ -69,59 +68,68 @@ app.get("/endings/:userId", (req, res) => {
 });
 
 
-// 회원가입
-app.post("/signup", (req, res) => {
+// 회원가입 - 비밀번호는 bcrypt 해시로 저장
+app.post("/signup", async (req, res) => {
     const { id, password } = req.body;
 
     if (!id || !password) {
         return res.status(400).json({ error: "아이디와 비밀번호를 모두 입력해주세요." });
     }
 
-    db.run(
-        `INSERT INTO users (id,password) VALUES (?,?)`,
-        [id, password],
-        (err) => {
-            if (err) {
-                console.error(err);
-                res.status(400).json({ error: "이미 존재하는 아이디 또는 오류 발생" });
-            } else {
+    try {
+        const hashed = await bcrypt.hash(password, 10); // 평문 대신 해시 저장
+        db.run(
+            `INSERT INTO users (id, password) VALUES (?, ?)`,
+            [id, hashed],
+            (err) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(400).json({ error: "이미 존재하는 아이디 또는 오류 발생" });
+                }
                 res.status(200).json({ message: "회원가입 성공" });
             }
-        }
-    );
+        );
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "서버 오류 발생" });
+    }
 });
 
-// 로그인
+// 로그인 - 저장된 해시와 비교
 app.post("/login", (req, res) => {
     const { id, password } = req.body;
 
-    db.get(
-        `SELECT * FROM users WHERE id = ? AND password = ?`,
-        [id, password],
-        (err, row) => {
-            if (err) {
-                console.error(err);
-                res.status(500).json({ error: "서버 오류 발생" });
-            } else if (row) {
-                res.status(200).json({ message: "로그인 성공" });
-            } else {
-                res.status(401).json({ error: "아이디나 비밀번호가 올바르지 않습니다." });
-            }
+    if (!id || !password) {
+        return res.status(400).json({ error: "아이디와 비밀번호를 모두 입력해주세요." });
+    }
+
+    db.get(`SELECT password FROM users WHERE id = ?`, [id], async (err, row) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "서버 오류 발생" });
+        }
+        const ok = row && await bcrypt.compare(password, row.password);
+        if (ok) {
+            res.status(200).json({ message: "로그인 성공" });
+        } else {
+            // 아이디가 없는 경우와 비밀번호가 틀린 경우를 같은 메시지로 응답
+            res.status(401).json({ error: "아이디나 비밀번호가 올바르지 않습니다." });
+        }
+    });
+});
+
+// 전체 유저 조회 - 비밀번호는 응답에서 제외
+app.get("/users", (req, res) => {
+    db.all(
+        `SELECT id, favorability FROM users ORDER BY favorability DESC`,
+        [],
+        (err, rows) => {
+            if (err) return res.status(500).json({ error: "DB 조회 오류" });
+            res.json(rows);
         }
     );
 });
 
-
-// 전체 유저 조회
-app.get("/users", (req, res) => {
-    db.all(`SELECT * FROM users`, [], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: "DB 조회 오류" });
-        } else {
-            res.json(rows);
-        }
-    });
-});
 
 // 404 처리 - JSON 반환
 app.use((req, res) => {
