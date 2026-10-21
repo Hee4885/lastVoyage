@@ -14,10 +14,11 @@ db.run(`
         CREATE TABLE IF NOT EXISTS users 
         (
             id TEXT PRIMARY KEY,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            favorability INT DEFAULT 0,
+            ending TEXT
         )
      `);
-
 
 // 게임 불러오기 table
 
